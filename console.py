@@ -128,7 +128,7 @@ class HBNBCommand(cmd.Cmd):
         for i, key in enumerate(ag):
             if i:
                 arg = key.replace('\"','').split("=")
-                if '.' in arg[1]:
+                if '.' in arg[1] and arg[1].isnumeric():
                     arg_dict[arg[0]] = float(arg[1])
                 elif arg[1].isdigit():
                     arg_dict[arg[0]] = int(arg[1])
