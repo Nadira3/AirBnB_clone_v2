@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import os
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -12,6 +13,7 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+database =  os.getenv('HBNB_TYPE_STORAGE')
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -135,8 +137,12 @@ class HBNBCommand(cmd.Cmd):
         my_class = globals()[ag[0]]
         instance = my_class()
         instance.__dict__.update(arg_dict)
+        instance.to_dict()
         storage.new(instance)
-        storage.save()
+        if database == "db":
+            storage.save(instance)
+        else:
+            storage.save()
         print(instance.id)
 
     def help_create(self):
@@ -213,17 +219,18 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
         print_list = []
-
+       
+        result_dict = storage.all(globals()[args] if database == "db" else None)
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in result_dict.items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in result_dict.items():
                 print_list.append(str(v))
 
         print(print_list)
@@ -236,7 +243,7 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, args):
         """Count current number of class instances"""
         count = 0
-        for k, v in storage._FileStorage__objects.items():
+        for k, v in storage.all().items():
             if args == k.split('.')[0]:
                 count += 1
         print(count)
