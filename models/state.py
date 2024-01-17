@@ -15,7 +15,12 @@ class State(BaseModel, Base):
 
     @property
     def cities(self):
-        city_list = storage.__session.query(City, State).\
-                filter(City.state_id == self.id).Order_by(City.id).all()
+        """ cities model docs """
+        from models import storage
+        city_list = []
+        city_dict = storage.all(City)
+        for city_objs in city_dict.values():
+            if city_objs['state_id'] == self.id:
+                city_list.append(city_objs)
         return city_list
         
