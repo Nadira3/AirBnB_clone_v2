@@ -32,6 +32,7 @@ class DBStorage:
             DBStorage.__table__.drop(self.__engine)
     
     def all(self, cls=None):
+        """ all method documentation """
         result = {}
         if cls:
             rows = self.__session.query(cls).all()
@@ -50,16 +51,20 @@ class DBStorage:
         return result
 
     def new(self, obj):
+        """ new method documentation """
         self.__session.add(obj)
 
     def save(self, obj):
+        """ save method documentation """
         self.__session.commit()
 
     def delete(self, obj):
+        """ delete method documentation """
         if obj:
             self.__session.delete(obj)
 
     def reload(self):
+        """ reload method documentation """
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_factory)
