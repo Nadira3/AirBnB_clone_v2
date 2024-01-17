@@ -6,7 +6,14 @@ from models.base_model import BaseModel, Base, String, Column, ForeignKey
 class User(BaseModel, Base):
     """This class defines a user by various attributes"""
     __tablename__ = 'users'
-    email = Column(String(128))
-    password = Column(String(128))
-    first_name = Column(String(128))
-    last_name = Column(String(128))
+
+    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        email = Column(String(128))
+        password = Column(String(128))
+        first_name = Column(String(128))
+        last_name = Column(String(128))
+    else:
+        email = ""
+        password = ""
+        first_name = ""
+        last_name = ""
